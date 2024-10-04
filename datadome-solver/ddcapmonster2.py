@@ -15,7 +15,8 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 SITE_URL_WITH_DATADOME = "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CK55"
 API_KEY ="d6438f93a291d130f08e1721d4ac1fdf"
 
-
+TELEGRAM_BOT_TOKEN="7207865537:AAEyl4_fIWnFjZTnaH9uN6eJeYUF87MfRAk"
+TELEGRAM_CHAT_ID="-1002481993342"
 productheaders = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'accept-language': 'en-US,en;q=0.9,id;q=0.8',
@@ -115,7 +116,20 @@ def capmonster_solver(website_url, captcha_url, cid):
             return
         print('.', flush=True, end="")
 
+def send_to_telegram(message):
+    apiToken = TELEGRAM_BOT_TOKEN
+    chatID = TELEGRAM_CHAT_ID
+    apiURL = f'https://api.telegram.org/bot{apiToken}/sendMessage'
+    try:
+        response = requests.post(apiURL, json={'chat_id': chatID, 'text': message, "parse_mode": "HTML"})
+        # print(response.text)
+    except Exception as e:
+        print(e)
 
+def parse_to_html(link):
+    html = "Product Available</strong>\n"
+    html += f'<a href="{link}">Go to Page</a>'
+    return html
 
 def parse():
     def func_captcha_url(url_with_datadome, proxy):
@@ -235,6 +249,8 @@ def parse():
         if response.status_code == 404:
             print("Product Empty")
         else:
+            html = parse_to_html(link=url)
+            send_to_telegram(html)
             print("Product Available")
         idx += 1
 
