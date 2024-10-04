@@ -183,7 +183,7 @@ def parse():
                 continue
 
     urls = [
-    "https://www.hermes.com/us/en/product/straight-cut-jeans-H455400H20140/",
+    # "https://www.hermes.com/us/en/product/straight-cut-jeans-H455400H20140/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CC89/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CK09/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CK55/",
