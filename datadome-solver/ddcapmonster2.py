@@ -127,7 +127,7 @@ def send_to_telegram(message):
         print(e)
 
 def parse_to_html(link):
-    html = "Product Available</strong>\n"
+    html = "<strong>Product Available</strong>\n"
     html += f'<a href="{link}">Go to Page</a>'
     return html
 
@@ -182,8 +182,9 @@ def parse():
                 # print("error from func_captcha_url:", str(e))
                 continue
 
-    urls = ["", ""]
-    urls = ["https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CC89/",
+    urls = [
+    # "https://www.hermes.com/us/en/product/straight-cut-jeans-H455400H20140/",
+    "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CC89/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CK09/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CK55/",
     "https://www.hermes.com/us/en/product/lindy-26-bag-H073428CK37/",
@@ -197,7 +198,8 @@ def parse():
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CK37/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CC8Q/",
     "https://www.hermes.com/us/en/product/constance-long-to-go-wallet-H080125CK89/",
-    "https://www.hermes.com/us/en/product/constance-long-to-go-wallet-H080125CK10/",]
+    "https://www.hermes.com/us/en/product/constance-long-to-go-wallet-H080125CK10/",
+    ]
     idx = 0
     
     proxy = random.choice(proxypools)
@@ -213,7 +215,7 @@ def parse():
         }
         productheaders["referer"] = url
         productheaders["origin"] = url
-        print(url, flush=True, end=" ...")
+        print(url, '...', flush=True, end="")
         response = requests.get(url, proxies=proxies, cookies=cookies, headers=productheaders)
         if response.status_code == 403:
             print("Failed")
@@ -222,6 +224,8 @@ def parse():
             if response.status_code == 404:
                 print("Product Empty")
             else:
+                html = parse_to_html(link=url)
+                send_to_telegram(html)
                 print("Product Available")
             idx += 1
             continue
@@ -235,8 +239,9 @@ def parse():
         else:
             # print("Retried to t=fe", url)
             proxy = random.choice(proxypools)
+            idx += 1
             continue
-        print(url, flush=True, end=" ...")
+        print(url, '...', flush=True, end="")
         for _ in range (0,10):
             response = requests.get(url, proxies=proxies, headers=productheaders, cookies=cookies, timeout=(20, 20))
             if response.status_code != 403:
