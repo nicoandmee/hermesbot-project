@@ -6,6 +6,8 @@ from tls_client import Session as TlsSession
 from twocaptcha import TwoCaptcha
 from urllib.parse import quote_plus
 from requests import Session
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 # TODO: YOUR_PROXY
 PROXY = "geo.iproyal.com:12321:qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-us_city-tallahassee"
 # PROXY = "us-ca.proxymesh.com:31280"
@@ -52,32 +54,32 @@ productheaders = {
 # ]
 
 #smart
-# proxypools = [
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10001",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10002",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10003",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10004",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10005",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10006",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10007",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10008",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10009",
-# "user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10010",
-# ]
+proxypools = [
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10001",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10002",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10003",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10004",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10005",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10006",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10007",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10008",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10009",
+"user-spm9mlk9ik-os-android:3TlhzhsLf~D7g60Pyj@gate.smartproxy.com:10010",
+]
 
 #iproyal
-proxypools = [
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-0FZ7vDwE_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-OX22hIzq_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-Dk9CvstP_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-z7KB5SaH_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-BtY4Ccgl_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-APSCmzuz_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-h48fSNQ8_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-TeCMjniX_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-IBii2U8R_lifetime-10m@geo.iproyal.com:12321",
-"qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-HVEcMywR_lifetime-10m@geo.iproyal.com:12321",
-]
+# proxypools = [
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-0FZ7vDwE_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-OX22hIzq_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-Dk9CvstP_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-z7KB5SaH_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-BtY4Ccgl_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-APSCmzuz_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-h48fSNQ8_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-TeCMjniX_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-IBii2U8R_lifetime-10m@geo.iproyal.com:12321",
+# "qCVIVja9MOwhXLdq:agcOHyRhV4b6DWCn_country-ae,id_session-HVEcMywR_lifetime-10m@geo.iproyal.com:12321",
+# ]
 def capmonster_solver(website_url, captcha_url, cid):
     headers = {
         "Content-Type": "application/json",
@@ -137,33 +139,36 @@ def parse_to_html(link):
     return html
 
 def parse():
-    def func_captcha_url(url_with_datadome, proxy):
-        session = TlsSession("chrome_120") 
+    def func_captcha_url(url_with_datadome):
+        proxy = random.choice(proxypools)
+        proxies = {
+            "http": f"http://{proxy}",
+            "https":f"http://{proxy}",
+        }
+        productheaders["referer"] = url_with_datadome
+        productheaders["origin"] = url_with_datadome
+        print(url_with_datadome, '...', flush=True, end="")
+        
+        response = requests.get(url_with_datadome, proxies=proxies, cookies=cookies, headers=productheaders)
+
+        session = TlsSession("chrome_120")
         session.proxies.update({
             "http": f"http://{proxy}",
             "https":f"http://{proxy}",
         })
-        # ipurl="http://ip-api.com/json"
-        # response = session.get(ipurl)
-        # print("func",response.json()['query'])
 
-        page_url = url_with_datadome
-        # print(url_with_datadome)
+
+        page_url_with_datadome = url_with_datadome
         while True:
             try:
-                # headerchoice = random.choice(acceptedheaders)
                 headerchoice = productheaders.copy()
 
                 headerchoice['origin'] = url_with_datadome
                 headerchoice['referer'] = url_with_datadome
                 session.headers.update(headerchoice)
-                # breakpoint()
                 geo = ""
-                # print(proxy)
                 
                 response = session.get(page_url)
-                # print(response.text)
-                # breakpoint()
                 if response.status_code == 403 or "geo.captcha-delivery.com" in response.text:
                     if 'dd=' in response.text:
                         dd = response.text.split('dd=')[1]
@@ -186,7 +191,6 @@ def parse():
             except Exception as e:
                 # print("error from func_captcha_url:", str(e))
                 continue
-
     urls = [
     # "https://www.hermes.com/us/en/product/straight-cut-jeans-H455400H20140/",
     "https://www.hermes.com/us/en/product/lindy-ii-mini-bag-H085956CC89/",
@@ -205,65 +209,15 @@ def parse():
     "https://www.hermes.com/us/en/product/constance-long-to-go-wallet-H080125CK89/",
     "https://www.hermes.com/us/en/product/constance-long-to-go-wallet-H080125CK10/",
     ]
-    idx = 0
-    
-    proxy = random.choice(proxypools)
-    cookies = False
-    while True:
-        if idx == len(urls):
-            idx = 0
-            continue
-        url = urls[idx]
-        proxies = {
-            "http": f"http://{proxy}",
-            "https":f"http://{proxy}",
-        }
-        productheaders["referer"] = url
-        productheaders["origin"] = url
-        print(url, '...', flush=True, end="")
-        response = requests.get(url, proxies=proxies, cookies=cookies, headers=productheaders)
-        if response.status_code == 403:
-            print("Failed")
-            cookie = func_captcha_url(url_with_datadome=url, proxy=proxy)
-        else:
-            if response.status_code == 404:
-                print("Product Empty")
-            else:
-                html = parse_to_html(link=url)
-                send_to_telegram(html)
-                print("Product Available")
-            idx += 1
-            continue
-        
 
-        if cookie:
-            cookieupdate = cookie.split(";")[0]
-            cookies = {
-                'datadome':cookieupdate
-            }
-        else:
-            # print("Retried to t=fe", url)
-            proxy = random.choice(proxypools)
-            idx += 1
-            continue
-        print(url, '...', flush=True, end="")
-        for _ in range (0,10):
-            response = requests.get(url, proxies=proxies, headers=productheaders, cookies=cookies, timeout=(20, 20))
-            if response.status_code != 403:
-                break
-        if response.status_code == 403:
-            print("Failed")
-            proxy = random.choice(proxypools)
-            continue
-        
-        if response.status_code == 404:
-            print("Product Empty")
-        else:
-            html = parse_to_html(link=url)
-            send_to_telegram(html)
-            print("Product Available")
-        idx += 1
-
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        futures = [executor.submit(func_captcha_url, url) for idx, url in enumerate(urls)]
+        # breakpoint()
+        for i, future in enumerate(as_completed(futures)):
+            try:
+                future.result()  # Ensure the task has completed without errors
+            except Exception as e:
+                print(f"Error in thread: {e}")
 
 if __name__ == '__main__':
     while True:
