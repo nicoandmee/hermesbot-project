@@ -6,12 +6,10 @@ from browserforge.fingerprints import Screen, FingerprintGenerator
 
 
 class DataDome:
-    def __init__(self, ddv="4.25.0", ddk="your datadome key"):
+    def __init__(self, ddv="4.35.4", ddk="60D428DD4BC75DF55D205B3DBE4AFF"):
         self.__ddv = ddv
         self.__ddk = ddk
-        self.__screen = Screen(
-            min_width=1280, max_width=5120, min_height=720, max_height=2880
-        )
+        self.__screen = Screen(min_width=1280, max_width=5120, min_height=720, max_height=2880)
         self.__headers = FingerprintGenerator(
             browser=("chrome", "firefox", "safari", "edge"),
             os=("windows", "macos"),
@@ -42,9 +40,7 @@ class DataDome:
                 "Sec-Fetch-Mode": "cors",
                 "Sec-Fetch-Site": "cross-site",
                 "User-Agent": self.__temps.headers.get("User-Agent"),
-                "Upgrade-Insecure-Requests": self.__temps.headers.get(
-                    "Upgrade-Insecure-Requests"
-                ),
+                "Upgrade-Insecure-Requests": self.__temps.headers.get("Upgrade-Insecure-Requests"),
             },
             "payload": {
                 "ddv": self.__ddv,
